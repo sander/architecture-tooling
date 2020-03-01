@@ -1,0 +1,12 @@
+[package]
+name = "business"
+version = "0.1.0"
+authors = ["Sander Dijkhuis <mail@sanderdijkhuis.nl>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+reqwest = { version = "0.10", features = ["json"] }
+tokio = { version = "0.2", features = ["full"] }
+url = "2.1.1"
+async-trait = "0.1.24"

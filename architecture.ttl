@@ -1,0 +1,22 @@
+@prefix togaf: <http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#>
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<#knowledge-management>
+  a togaf:Function ;
+  rdfs:label "knowledge management" ;
+  rdfs:comment "Management of models representing knowledge." .
+
+<#knowledge-service>
+  a togaf:BusinessService ;
+  rdfs:label "knowledge service" ;
+  togaf:providesGovernedInterfacetoAccess <#knowledge-management> .
+
+<#architecture-management>
+  a togaf:Function ;
+  rdfs:label "architecture management" ;
+  rdfs:comment "Structure of components, relationships, principles, and guidelines for design." .
+
+<#architecture-service>
+  a togaf:BusinessService ;
+  rdfs:label "architecture service" ;
+  togaf:providesGovernedInterfacetoAccess <#architecture-management> .
