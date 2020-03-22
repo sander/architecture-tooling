@@ -11,6 +11,11 @@
   rdfs:label "knowledge service" ;
   togaf:providesGovernedInterfacetoAccess <#knowledge-management> .
 
+<#knowledge-application-service>
+  a togaf:InformationSystemService ;
+  rdfs:label "knowledge application service" ;
+  togaf:ISRealizesBS <#knowledge-service> .
+
 <#architecture-management>
   a togaf:Function ;
   rdfs:label "architecture management" ;
@@ -20,3 +25,8 @@
   a togaf:BusinessService ;
   rdfs:label "architecture service" ;
   togaf:providesGovernedInterfacetoAccess <#architecture-management> .
+
+<#architecture-application-service>
+  a togaf:InformationSystemService ;
+  rdfs:label "architecture application service" ;
+  togaf:ISRealizesBS <#architecture-service> .

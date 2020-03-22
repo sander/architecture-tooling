@@ -31,6 +31,7 @@ This project uses:
 
 1. Download [Apache Jena Fuseki](https://jena.apache.org/download/).
 2. In its root folder, `chmod +x` and run `./fuseki-server`.
-3. In the current project’s root folder, run `cargo run`.
+3. In the current project’s root folder, run `./download-togaf.sh`.
+4. In the current project’s root folder, run `cargo run`.
 
-Note: the only thing it does at the time of writing is creating an empty dataset (step 1 of Plan above).
+Note: the only thing it does at the time of writing consists of steps 1–3 of the Plan above.
