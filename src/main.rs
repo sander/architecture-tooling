@@ -24,6 +24,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     service.import(&dataset, togaf_file).await;
     service.import(&dataset, archi_file).await;
 
+    let query = std::include_str!("components.sparql");
+    let result = service.query(&dataset, query).await;
+    println!("result: {:?}", result);
+
     service.delete(&dataset).await;
 
     Ok(())
