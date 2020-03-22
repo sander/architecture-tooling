@@ -1,15 +1,16 @@
 mod architecture;
 mod knowledge;
 
-use crate::knowledge::KnowledgeService;
+use architecture::ArchitectureService;
+use knowledge::KnowledgeService;
 use std::fs;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let local = url::Url::parse("http://localhost:3030/")?;
-    let service = knowledge::FusekiKnowledgeService::new(&client, local);
-    let dataset = service.create_temporary_dataset().await;
+    let knowledge = knowledge::FusekiKnowledgeService::new(&client, local);
+    let dataset = knowledge.create_temporary_dataset().await;
     println!("dataset: {:?}", dataset);
 
     // let togaf_url = "https://raw.githubusercontent.com/sander/togaf-content-metamodel-ontology/master/OntologyTOGAFContentMetamodelV1.xml";
@@ -21,14 +22,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let archi_contents = fs::read("architecture.ttl").unwrap();
     let archi_file = knowledge::DataFile::Turtle(archi_contents);
 
-    service.import(&dataset, togaf_file).await;
-    service.import(&dataset, archi_file).await;
+    knowledge.import(&dataset, togaf_file).await;
+    knowledge.import(&dataset, archi_file).await;
 
-    let query = std::include_str!("components.sparql");
-    let result = service.query(&dataset, query).await;
+    let architecture = architecture::DataBackedArchitectureService::new(&dataset, &knowledge);
+    let result = architecture.components().await;
     println!("result: {:?}", result);
 
-    service.delete(&dataset).await;
+    knowledge.delete(&dataset).await;
 
     Ok(())
 }

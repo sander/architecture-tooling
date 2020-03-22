@@ -29,17 +29,10 @@ impl DataFile {
     }
 }
 
-// pub enum RdfTerm {
-//     IRI(String),
-//     PlainLiteral(),
-//     TypedLiteral(String,RdfUriReference)
-//     BlankNode
-// }
-
 #[derive(Debug)]
 pub struct QueryResult {
-    vars: Vec<String>,
-    bindings: Vec<HashMap<String, rdf::node::Node>>,
+    pub vars: Vec<String>,
+    pub bindings: Vec<HashMap<String, rdf::node::Node>>,
 }
 
 #[async_trait]
