@@ -32,6 +32,7 @@ impl DataFile {
 pub trait KnowledgeService {
     async fn create_temporary_dataset(&self) -> Dataset;
     async fn import(&self, dataset: &Dataset, file: DataFile);
+    async fn delete(&self, dataset: &Dataset);
 }
 
 pub struct FusekiKnowledgeService<'a> {
@@ -73,5 +74,25 @@ impl KnowledgeService for FusekiKnowledgeService<'_> {
             reqwest::StatusCode::OK => (),
             code => panic!("Unexpected status {} with message {}.", code, body),
         };
+    }
+
+    async fn delete(&self, dataset: &Dataset) {
+        match self
+            .client
+            .delete(
+                self.base
+                    .join("/$/datasets/")
+                    .unwrap()
+                    .join(&dataset.name)
+                    .unwrap(),
+            )
+            .send()
+            .await
+            .unwrap()
+            .status()
+        {
+            reqwest::StatusCode::OK => (),
+            code => panic!("Unexpected status {}.", code),
+        }
     }
 }

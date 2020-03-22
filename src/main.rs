@@ -22,5 +22,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     service.import(&dataset, togaf_file).await;
     service.import(&dataset, archi_file).await;
 
+    service.delete(&dataset).await;
+
     Ok(())
 }
