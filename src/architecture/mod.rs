@@ -66,12 +66,15 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
                         None => None,
                         d => panic!("Unexpected description {:?}", d),
                     },
-                    kind: ComponentKind::BusinessService, // TODO
-                                                          //   kind: match record.get("kind") {
-                                                          //         Some(rdf::node::Node::UriNode {
-                                                          //             uri
-                                                          //         }) if uri == &rdf::uri::Uri { uri : "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#BusinessService".to_string() }  => ComponentKind::BusinessService,
-                                                          //         _ => panic!("Unexpected kind"),
+                    kind: match record.get("kind") {
+                        Some(rdf::node::Node::UriNode { uri }) => match uri.to_string().as_str() {
+                            "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#BusinessService" => ComponentKind::BusinessService,
+                            "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#InformationSystemService" => ComponentKind::InformationSystemService,
+                            "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#Function" => ComponentKind::Function,
+                            kind => panic!("Unknown kind {}.", kind)
+                        },
+                        _ => panic!("Unexpected kind"),
+                    },
                 }
             })
             .collect::<Vec<_>>()
