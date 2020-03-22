@@ -5,6 +5,10 @@ use architecture::ArchitectureService;
 use knowledge::KnowledgeService;
 use std::fs;
 
+fn graph<'a>(_components: Vec<architecture::Component>) -> &'a str {
+    "digraph components {}"
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
@@ -36,6 +40,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("result: {:?}", result);
 
     knowledge.delete(&dataset).await;
+
+    println!("graph: {}", graph(result));
 
     Ok(())
 }
