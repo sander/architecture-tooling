@@ -4,9 +4,11 @@ mod knowledge;
 use architecture::ArchitectureService;
 use knowledge::KnowledgeService;
 use std::fs;
+use std::io::Write;
+use std::process;
 
 fn graph<'a>(_components: Vec<architecture::Component>) -> &'a str {
-    "digraph components {}"
+    "digraph components { a -> b }"
 }
 
 #[tokio::main]
@@ -41,7 +43,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     knowledge.delete(&dataset).await;
 
-    println!("graph: {}", graph(result));
+    let dot = graph(result);
+    let child = process::Command::new("dot")
+        .arg("-Tsvg")
+        .arg("-oout.svg")
+        .stdin(process::Stdio::piped())
+        .spawn()
+        .expect("failed to execute dot");
+
+    let mut outstdin = child.stdin.expect("failed to obtain stdin");
+    outstdin.write_all(dot.as_bytes()).expect("failed to write");
+
+    // println!("graph: {}", graph(result));
 
     Ok(())
 }
