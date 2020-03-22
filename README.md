@@ -34,4 +34,4 @@ This project uses:
 3. In the current project’s root folder, run `./download-togaf.sh`.
 4. In the current project’s root folder, run `cargo run`.
 
-Note: the only thing it does at the time of writing consists of steps 1–3 of the Plan above.
+Note: the only thing it does at the time of writing consists of steps 1–3 and 6 of the Plan above.
