@@ -44,14 +44,8 @@ pub trait KnowledgeService {
 }
 
 pub struct FusekiKnowledgeService<'a> {
-    client: &'a reqwest::Client,
-    base: url::Url,
-}
-
-impl FusekiKnowledgeService<'_> {
-    pub fn new(client: &reqwest::Client, base: url::Url) -> FusekiKnowledgeService {
-        FusekiKnowledgeService { client, base }
-    }
+    pub client: &'a reqwest::Client,
+    pub base: url::Url,
 }
 
 #[derive(Deserialize, Debug)]

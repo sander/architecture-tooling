@@ -9,7 +9,10 @@ use std::fs;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let local = url::Url::parse("http://localhost:3030/")?;
-    let knowledge = knowledge::FusekiKnowledgeService::new(&client, local);
+    let knowledge = knowledge::FusekiKnowledgeService {
+        client: &client,
+        base: local,
+    };
     let dataset = knowledge.create_temporary_dataset().await;
     println!("dataset: {:?}", dataset);
 
@@ -25,7 +28,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     knowledge.import(&dataset, togaf_file).await;
     knowledge.import(&dataset, archi_file).await;
 
-    let architecture = architecture::DataBackedArchitectureService::new(&dataset, &knowledge);
+    let architecture = architecture::DataBackedArchitectureService {
+        dataset: &dataset,
+        knowledge: &knowledge,
+    };
     let result = architecture.components().await;
     println!("result: {:?}", result);
 

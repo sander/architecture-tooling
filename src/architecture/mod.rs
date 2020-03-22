@@ -21,17 +21,8 @@ pub trait ArchitectureService {
 }
 
 pub struct DataBackedArchitectureService<'a, K: knowledge::KnowledgeService + 'a> {
-    dataset: &'a knowledge::Dataset,
-    knowledge: &'a K,
-}
-
-impl<'a, K: knowledge::KnowledgeService + 'a> DataBackedArchitectureService<'a, K> {
-    pub fn new(
-        dataset: &'a knowledge::Dataset,
-        knowledge: &'a K,
-    ) -> DataBackedArchitectureService<'a, K> {
-        DataBackedArchitectureService { dataset, knowledge }
-    }
+    pub dataset: &'a knowledge::Dataset,
+    pub knowledge: &'a K,
 }
 
 #[async_trait]
