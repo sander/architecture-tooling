@@ -6,9 +6,36 @@ use knowledge::KnowledgeService;
 use std::fs;
 use std::io::Write;
 use std::process;
+use crate::architecture::ComponentKind;
 
-fn graph<'a>(_components: Vec<architecture::Component>) -> &'a str {
-    "digraph components { a -> b }"
+fn graph<'a>(components: Vec<architecture::Component>) -> String {
+    let mut s = "digraph components {\n".to_string();
+
+    for c in components.iter() {
+        s.push('"');
+        s.push_str(c.label.replace('"',"\\\"").as_str());
+        s.push_str("\" [shape=plain,style=filled,label=<<B>");
+        s.push_str(c.label.replace('"',"\\\"").as_str());
+        s.push_str("</B><BR/>[");
+        s.push_str(match c.kind {
+            ComponentKind::BusinessService => "Business service",
+            ComponentKind::Function => "Function",
+            ComponentKind::InformationSystemService => "Information system service",
+        });
+        s.push_str("]");
+        match &c.description {
+            None => {},
+            Some(d) => {
+                s.push_str("<BR/><BR/>");
+                s.push_str(d.replace('"',"\\\"").as_str());
+            },
+        }
+        s.push_str(">]\n");
+    }
+
+    s.push_str("}");
+
+    s
 }
 
 #[tokio::main]
@@ -22,9 +49,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let dataset = knowledge.create_temporary_dataset().await;
     println!("dataset: {:?}", dataset);
 
-    // let togaf_url = "https://raw.githubusercontent.com/sander/togaf-content-metamodel-ontology/master/OntologyTOGAFContentMetamodelV1.xml";
-    // let togaf_body = client.get(togaf_url).send().await?.bytes().await?;
-    // let togaf_file = knowledge::DataFile::RdfXml(togaf_body.to_vec());
     let togaf_contents = fs::read("OntologyTOGAFContentMetamodelV1.xml").unwrap();
     let togaf_file = knowledge::DataFile::RdfXml(togaf_contents);
 
@@ -44,6 +68,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     knowledge.delete(&dataset).await;
 
     let dot = graph(result);
+
     let child = process::Command::new("dot")
         .arg("-Tsvg")
         .arg("-oout.svg")
@@ -54,7 +79,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut outstdin = child.stdin.expect("failed to obtain stdin");
     outstdin.write_all(dot.as_bytes()).expect("failed to write");
 
-    // println!("graph: {}", graph(result));
+    println!("graph: {}", dot);
 
     Ok(())
 }

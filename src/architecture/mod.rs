@@ -10,9 +10,9 @@ pub enum ComponentKind {
 
 #[derive(Debug)]
 pub struct Component {
-    label: String,
-    description: Option<String>,
-    kind: ComponentKind,
+    pub label: String,
+    pub description: Option<String>,
+    pub kind: ComponentKind,
 }
 
 #[async_trait]
