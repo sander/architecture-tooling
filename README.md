@@ -14,7 +14,7 @@ Intended first workflow:
 2. Import the [TOGAF Content Metamodel graph](https://www.researchgate.net/publication/220708864_Towards_the_Formalisation_of_the_TOGAF_Content_Metamodel_using_Ontologies).
 3. Import some custom (`.ttl`) business architecture graph, listing `business service`s, `product`s, and supporting `application service`s, with reference to the TOGAF Content Metamodel. See for example [architecture.ttl](architecture.ttl).
 4. Query for `service catalogue` data, relating `product`s to `business service`s to `application service`s.
-5. Render the `service catalogue` using PlantUML.
+5. Render the `service catalogue` using Graphviz.
 6. Delete the temporary dataset.
 
 When the business architecture graph is kept in version control with CI/CD support, the program should run in CI/CD and upload its resulting `service catalogue` data to some object store.
@@ -25,7 +25,7 @@ This project uses:
 
 - Rust for integrated development with clear domain modeling capabilities (e.g. algebraic data types, traits).
 - Apache Jena Fuseki for knowledge management implementation.
-- (Soon) PlantUML with its ArchiMate support for architecture diagram rendering.
+- Graphviz for architecture diagram rendering.
 
 ## To run
 
@@ -34,4 +34,4 @@ This project uses:
 3. In the current project’s root folder, run `./download-togaf.sh`.
 4. In the current project’s root folder, run `cargo run`.
 
-Note: the only thing it does at the time of writing consists of steps 1–3 and 6 of the Plan above.
+Note: at the time of writing only the workflow above is implemented, with steps missing. For example, `service catalogue` data is drawn but no relationships yet.
