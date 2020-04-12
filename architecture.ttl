@@ -16,10 +16,16 @@
   rdfs:label "knowledge application service" ;
   togaf:ISRealizesBS <#knowledge-service> .
 
+<#knowledge-application-service-component>
+  a togaf:LogicalApplicationComponent ;
+  rdfs:label "knowledge application service component" ;
+  togaf:realizesGoal <#knowledge-application-service> .
+
 <#architecture-management>
   a togaf:Function ;
   rdfs:label "architecture management" ;
-  rdfs:comment "Structure of components, relationships, principles, and guidelines for design." .
+  rdfs:comment "Structure of components, relationships, principles, and guidelines for design." ;
+  togaf:supportsOrIsRealizedByProcess <#architecture-modelling> .
 
 <#architecture-service>
   a togaf:BusinessService ;
@@ -29,4 +35,10 @@
 <#architecture-application-service>
   a togaf:InformationSystemService ;
   rdfs:label "architecture application service" ;
-  togaf:ISRealizesBS <#architecture-service> .
+  togaf:ISRealizesBS <#architecture-service> ;
+  togaf:isRealizedThrough <#knowledge-application-service-component> .
+
+<#architecture-modelling>
+  a togaf:Process ;
+  rdfs:label "architecture modelling" ;
+  togaf:orchestratesAndOrDecomposes <#knowledge-management> .
