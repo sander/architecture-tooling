@@ -19,6 +19,12 @@ Intended first workflow:
 
 When the business architecture graph is kept in version control with CI/CD support, the program should run in CI/CD and upload its resulting `business architecture` data to some object store.
 
+## Example
+
+In: [architecture.ttl](architecture.ttl). Out:
+
+![Diagram](doc/example.svg)
+
 ## Technology
 
 This project uses:
