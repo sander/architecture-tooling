@@ -13,11 +13,11 @@ Intended first workflow:
 1. Create a temporary dataset.
 2. Import the [TOGAF Content Metamodel graph](https://www.researchgate.net/publication/220708864_Towards_the_Formalisation_of_the_TOGAF_Content_Metamodel_using_Ontologies).
 3. Import some custom (`.ttl`) business architecture graph, listing `business service`s, `product`s, and supporting `application service`s, with reference to the TOGAF Content Metamodel. See for example [architecture.ttl](architecture.ttl).
-4. Query for `service catalogue` data, relating `product`s to `business service`s to `application service`s.
-5. Render the `service catalogue` using Graphviz.
+4. Query for `business architecture` data, relating `product`s to `business service`s to `application service`s.
+5. Render the `business architecture` using Graphviz.
 6. Delete the temporary dataset.
 
-When the business architecture graph is kept in version control with CI/CD support, the program should run in CI/CD and upload its resulting `service catalogue` data to some object store.
+When the business architecture graph is kept in version control with CI/CD support, the program should run in CI/CD and upload its resulting `business architecture` data to some object store.
 
 ## Technology
 
@@ -34,4 +34,4 @@ This project uses:
 3. In the current project’s root folder, run `./download-togaf.sh`.
 4. In the current project’s root folder, run `cargo run`.
 
-Note: at the time of writing only the workflow above is implemented, with steps missing. For example, `service catalogue` data is drawn but no relationships yet.
+Note: at the time of writing only the workflow above is implemented, with steps missing.
