@@ -7,6 +7,8 @@ WHERE {
   ?c1 ?label ?c2 .
   ?c1 rdfs:label ?from .
   ?c2 rdfs:label ?to .
-  { ?c1 a togaf:BusinessService } UNION { ?c1 a togaf:Function } UNION { ?c1 a togaf:InformationSystemService } .
-  { ?c2 a togaf:BusinessService } UNION { ?c2 a togaf:Function } UNION { ?c2 a togaf:InformationSystemService } .
+  ?c1 a ?class1 .
+  ?class1 rdfs:subClassOf togaf:BusinessArchitectureComponent .
+  ?c2 a ?class2 .
+  ?class2 rdfs:subClassOf togaf:BusinessArchitectureComponent .
 }

@@ -6,6 +6,7 @@ SELECT ?component ?label ?description ?kind
 WHERE {
   ?component rdfs:label ?label .
   OPTIONAL { ?component rdfs:comment ?description } .
-  ?component rdf:type ?kind
-  { ?component a togaf:BusinessService } UNION { ?component a togaf:Function } UNION { ?component a togaf:InformationSystemService } .
+  ?component rdf:type ?kind .
+  ?component a ?class .
+  ?class rdfs:subClassOf togaf:BusinessArchitectureComponent .
 }

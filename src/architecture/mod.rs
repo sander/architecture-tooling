@@ -6,6 +6,7 @@ pub enum ComponentKind {
     BusinessService,
     Function,
     InformationSystemService,
+    Process,
 }
 
 #[derive(Debug)]
@@ -71,6 +72,7 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
                             "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#BusinessService" => ComponentKind::BusinessService,
                             "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#InformationSystemService" => ComponentKind::InformationSystemService,
                             "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#Function" => ComponentKind::Function,
+                            "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#Process" => ComponentKind::Process,
                             kind => panic!("Unknown kind {}.", kind)
                         },
                         _ => panic!("Unexpected kind"),
@@ -102,6 +104,8 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
                     Some(rdf::node::Node::UriNode { uri }) => match uri.to_string().as_str() {
                         "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#ISRealizesBS" => "realizes".to_string(),
                         "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#providesGovernedInterfacetoAccess" => "provides governed interface to access".to_string(),
+                        "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#orchestratesAndOrDecomposes" => "orchestrates and/or decomposes".to_string(),
+                        "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#supportsOrIsRealizedByProcess" => "supports or is realized by".to_string(),
                         url => panic!("Unknown url {}.", url)
                     },
                     _ => panic!("Unexpected label"),

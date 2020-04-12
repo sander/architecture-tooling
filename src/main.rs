@@ -24,6 +24,7 @@ fn graph<'a>(
             ComponentKind::BusinessService => "Business service",
             ComponentKind::Function => "Function",
             ComponentKind::InformationSystemService => "Information system service",
+            ComponentKind::Process => "Process",
         });
         s.push_str("]");
         match &c.description {
