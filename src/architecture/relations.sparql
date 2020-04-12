@@ -1,0 +1,12 @@
+PREFIX togaf: <http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?from ?label ?to
+WHERE {
+  ?c1 ?label ?c2 .
+  ?c1 rdfs:label ?from .
+  ?c2 rdfs:label ?to .
+  { ?c1 a togaf:BusinessService } UNION { ?c1 a togaf:Function } UNION { ?c1 a togaf:InformationSystemService } .
+  { ?c2 a togaf:BusinessService } UNION { ?c2 a togaf:Function } UNION { ?c2 a togaf:InformationSystemService } .
+}
