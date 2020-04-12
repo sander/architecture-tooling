@@ -41,10 +41,9 @@ fn graph<'a>(
         s.push_str(r.from.replace('"', "\\\"").as_str());
         s.push_str("\" -> \"");
         s.push_str(r.to.replace('"', "\\\"").as_str());
-        //s.push_str("\": ");
-        //s.push_str(r.label.replace('"', "\\\"").as_str());
-        //s.push_str("\n");
-        s.push_str("\"\n");
+        s.push_str("\" [label=\"");
+        s.push_str(r.label.replace('"', "\\\"").as_str());
+        s.push_str("\"]\n");
     }
 
     s.push_str("}");
