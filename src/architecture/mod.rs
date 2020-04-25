@@ -9,6 +9,7 @@ pub enum ComponentKind {
     Process,
 }
 
+/// An architecture component. Of any level.
 #[derive(Debug)]
 pub struct Component {
     // TODO add id

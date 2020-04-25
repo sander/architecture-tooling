@@ -3,11 +3,13 @@ use serde::Deserialize;
 use std::collections::HashMap;
 use uuid::Uuid;
 
+/// Collection of data.
 #[derive(Debug)]
 pub struct Dataset {
     name: String,
 }
 
+/// File containing a graph.
 #[derive(Debug)]
 pub enum DataFile {
     Turtle(Vec<u8>),
@@ -35,11 +37,19 @@ pub struct QueryResult {
     pub bindings: Vec<HashMap<String, rdf::node::Node>>,
 }
 
+/// Provides knowledge management.
 #[async_trait]
 pub trait KnowledgeService {
+    /// Creates a temporary dataset for importing and querying.
     async fn create_temporary_dataset(&self) -> Dataset;
+
+    /// Imports a file into a dataset.
     async fn import(&self, dataset: &Dataset, file: DataFile);
+
+    /// Deletes a (temporary) dataset.
     async fn delete(&self, dataset: &Dataset);
+
+    /// Performs a SPARQL query.
     async fn query(&self, dataset: &Dataset, query: &str) -> QueryResult;
 }
 
