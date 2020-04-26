@@ -43,7 +43,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let child = process::Command::new("dot")
         .arg("-Tsvg")
-        .arg("-oout.svg")
+        .arg("-odoc/example.svg")
         .stdin(process::Stdio::piped())
         .spawn()
         .expect("failed to execute dot");
