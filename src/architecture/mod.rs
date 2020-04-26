@@ -9,10 +9,15 @@ pub enum ComponentKind {
     Process,
 }
 
+#[derive(Debug)]
+pub struct ComponentId {
+    pub value: String,
+}
+
 /// An architecture component. Of any level.
 #[derive(Debug)]
 pub struct Component {
-    // TODO add id
+    pub id: ComponentId,
     pub label: String,
     pub description: Option<String>,
     pub kind: ComponentKind,
@@ -41,7 +46,7 @@ pub fn visualization(components: Vec<Component>, relations: Vec<Relation>) -> Vi
 
     for c in components.iter() {
         s.push('"');
-        s.push_str(c.label.replace('"', "\\\"").as_str());
+        s.push_str(c.id.value.replace('"', "\\\"").as_str());
         s.push_str("\" [shape=plain,style=filled,label=<<B>");
         s.push_str(c.label.replace('"', "\\\"").as_str());
         s.push_str("</B><BR/>[");
@@ -99,20 +104,24 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
             .iter()
             .map(|record| {
                 Component {
+                    id: match record.get("component") {
+                        Some(rdf::node::Node::UriNode { uri }) => ComponentId { value: uri.to_string().to_string() },
+                        c => panic!("Unexpected component {:?}", c),
+                    },
                     label: match record.get("label") {
                         Some(rdf::node::Node::LiteralNode {
-                            literal: label,
-                            data_type: _,
-                            language: _,
-                        }) => label.to_string(),
+                                 literal: label,
+                                 data_type: _,
+                                 language: _,
+                             }) => label.to_string(),
                         _ => panic!("Unexpected label"),
                     },
                     description: match record.get("description") {
                         Some(rdf::node::Node::LiteralNode {
-                            literal: description,
-                            data_type: _,
-                            language: _,
-                        }) => Some(description.to_string()),
+                                 literal: description,
+                                 data_type: _,
+                                 language: _,
+                             }) => Some(description.to_string()),
                         None => None,
                         d => panic!("Unexpected description {:?}", d),
                     },
@@ -142,11 +151,7 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
             .iter()
             .map(|record| Relation {
                 from: match record.get("from") {
-                    Some(rdf::node::Node::LiteralNode {
-                        literal: label,
-                        data_type: _,
-                        language: _,
-                    }) => label.to_string(),
+                    Some(rdf::node::Node::UriNode {uri}) => uri.to_string().to_string(),
                     _ => panic!("Unexpected from"),
                 },
                 label: match record.get("label") {
@@ -160,11 +165,7 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
                     _ => panic!("Unexpected label"),
                 },
                 to: match record.get("to") {
-                    Some(rdf::node::Node::LiteralNode {
-                        literal: label,
-                        data_type: _,
-                        language: _,
-                    }) => label.to_string(),
+                    Some(rdf::node::Node::UriNode { uri})=> uri.to_string().to_string(),
                     _ => panic!("Unexpected to"),
                 },
             })
