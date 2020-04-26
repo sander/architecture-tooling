@@ -44,7 +44,7 @@ pub trait KnowledgeService {
     async fn create_temporary_dataset(&self) -> Dataset;
 
     /// Imports a file into a dataset.
-    async fn import(&self, dataset: &Dataset, file: DataFile);
+    async fn import(&self, dataset: &Dataset, graph_name: String, file: DataFile);
 
     /// Deletes a (temporary) dataset.
     async fn delete(&self, dataset: &Dataset);
@@ -115,14 +115,21 @@ impl KnowledgeService for FusekiKnowledgeService<'_> {
         }
     }
 
-    async fn import(&self, dataset: &Dataset, file: DataFile) {
+    async fn import(&self, dataset: &Dataset, graph_name: String, file: DataFile) {
         let form = reqwest::multipart::Form::new().part("files[]", file.multipart());
         let path = self.base.join(&format!("/{}/data", &dataset.name)).unwrap();
-        let response = self.client.post(path).multipart(form).send().await.unwrap();
+        let response = self
+            .client
+            .post(path)
+            .query(&[("graph", graph_name)])
+            .multipart(form)
+            .send()
+            .await
+            .unwrap();
         let status = response.status();
         let body = response.text().await.unwrap();
         match status {
-            reqwest::StatusCode::OK => (),
+            reqwest::StatusCode::CREATED => (),
             code => panic!("Unexpected status {} with message {}.", code, body),
         };
     }

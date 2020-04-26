@@ -24,8 +24,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let archi_contents = fs::read("architecture.ttl").unwrap();
     let archi_file = knowledge::DataFile::Turtle(archi_contents);
 
-    knowledge.import(&dataset, togaf_file).await;
-    knowledge.import(&dataset, archi_file).await;
+    knowledge
+        .import(&dataset, "togaf".to_string(), togaf_file)
+        .await;
+    knowledge
+        .import(&dataset, "architecture".to_string(), archi_file)
+        .await;
 
     let architecture = architecture::DataBackedArchitectureService {
         dataset: &dataset,

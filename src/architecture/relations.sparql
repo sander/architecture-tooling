@@ -4,9 +4,13 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?from ?label ?to
 WHERE {
-  ?from ?label ?to .
-  ?from a ?class1 .
-  ?class1 rdfs:subClassOf togaf:BusinessArchitectureComponent .
-  ?to a ?class2 .
-  ?class2 rdfs:subClassOf togaf:BusinessArchitectureComponent .
+  GRAPH ?g {
+    ?from ?label ?to .
+    ?from a ?class1 .
+    ?to a ?class2 .
+  } .
+  GRAPH ?t {
+    ?class1 rdfs:subClassOf togaf:BusinessArchitectureComponent .
+    ?class2 rdfs:subClassOf togaf:BusinessArchitectureComponent .
+  } .
 }
