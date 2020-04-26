@@ -94,7 +94,7 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
     for DataBackedArchitectureService<'a, K>
 {
     async fn components(&self) -> Vec<Component> {
-        let query = std::include_str!("components.sparql");
+        let query: &str = std::include_str!("components.sparql");
         let result = &self.knowledge.query(&self.dataset, query).await;
 
         assert_eq!(result.vars, ["component", "label", "description", "kind"]);
@@ -141,7 +141,7 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
     }
 
     async fn relations(&self) -> Vec<Relation> {
-        let query = std::include_str!("relations.sparql");
+        let query: &str = std::include_str!("relations.sparql");
         let result = &self.knowledge.query(&self.dataset, query).await;
 
         assert_eq!(result.vars, ["from", "label", "to"]);
