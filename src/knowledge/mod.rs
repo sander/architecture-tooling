@@ -3,7 +3,7 @@ use serde::Deserialize;
 use std::collections::HashMap;
 use uuid::Uuid;
 
-/// Collection of data.
+/// Collection of default graph and one or more named graphs.
 #[derive(Debug)]
 pub struct Dataset {
     name: String,
