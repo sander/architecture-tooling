@@ -4,13 +4,9 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?component ?label ?description ?kind
 WHERE {
-  GRAPH ?g {
-    ?component rdfs:label ?label .
-    OPTIONAL { ?component rdfs:comment ?description } .
-    ?component rdf:type ?kind .
-    ?component a ?class .
-  } .
-  GRAPH ?t {
-    ?class rdfs:subClassOf togaf:BusinessArchitectureComponent .
-  } .
+  GRAPH ?g1 { ?component rdfs:label ?label } .
+  OPTIONAL { GRAPH ?g2 { ?component rdfs:comment ?description } } .
+  GRAPH ?g3 { ?component rdf:type ?kind } .
+  GRAPH ?g4 { ?component a ?class } .
+  GRAPH ?t { ?class rdfs:subClassOf togaf:BusinessArchitectureComponent } .
 }
