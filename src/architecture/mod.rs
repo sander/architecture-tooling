@@ -25,8 +25,8 @@ pub struct Component {
 
 #[derive(Debug)]
 pub struct Relation {
-    pub from: String,
-    pub to: String,
+    pub from: ComponentId,
+    pub to: ComponentId,
     pub label: String,
 }
 
@@ -69,9 +69,9 @@ pub fn visualization(components: Vec<Component>, relations: Vec<Relation>) -> Vi
 
     for r in relations.iter() {
         s.push('"');
-        s.push_str(r.from.replace('"', "\\\"").as_str());
+        s.push_str(r.from.value.replace('"', "\\\"").as_str());
         s.push_str("\" -> \"");
-        s.push_str(r.to.replace('"', "\\\"").as_str());
+        s.push_str(r.to.value.replace('"', "\\\"").as_str());
         s.push_str("\" [label=\"");
         s.push_str(r.label.replace('"', "\\\"").as_str());
         s.push_str("\"]\n");
@@ -151,7 +151,7 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
             .iter()
             .map(|record| Relation {
                 from: match record.get("from") {
-                    Some(rdf::node::Node::UriNode {uri}) => uri.to_string().to_string(),
+                    Some(rdf::node::Node::UriNode { uri }) => ComponentId { value: uri.to_string().to_string() },
                     _ => panic!("Unexpected from"),
                 },
                 label: match record.get("label") {
@@ -165,7 +165,7 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
                     _ => panic!("Unexpected label"),
                 },
                 to: match record.get("to") {
-                    Some(rdf::node::Node::UriNode { uri})=> uri.to_string().to_string(),
+                    Some(rdf::node::Node::UriNode { uri }) => ComponentId { value: uri.to_string().to_string() },
                     _ => panic!("Unexpected to"),
                 },
             })
