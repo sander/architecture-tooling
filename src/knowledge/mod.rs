@@ -36,6 +36,11 @@ pub struct QueryResult {
     pub bindings: Vec<HashMap<String, rdf::node::Node>>,
 }
 
+#[derive(Debug)]
+pub struct Graph {
+    jsonld_representation: String,
+}
+
 /// Provides knowledge management.
 #[async_trait]
 pub trait KnowledgeService {
@@ -49,7 +54,9 @@ pub trait KnowledgeService {
     async fn delete(&self, dataset: &Dataset);
 
     /// Performs a SPARQL query.
-    async fn query(&self, dataset: &Dataset, query: &str) -> QueryResult;
+    async fn select(&self, dataset: &Dataset, query: &str) -> QueryResult;
+
+    async fn describe(&self, dataset: &Dataset, query: &str) -> Graph;
 }
 
 pub struct FusekiKnowledgeService<'a> {
@@ -145,7 +152,7 @@ impl KnowledgeService for FusekiKnowledgeService<'_> {
         }
     }
 
-    async fn query(&self, dataset: &Dataset, query: &str) -> QueryResult {
+    async fn select(&self, dataset: &Dataset, query: &str) -> QueryResult {
         let form = [("query", query)];
         let path = self.base.join(&dataset.name).unwrap();
         let response = self.client.post(path).form(&form).send().await.unwrap();
@@ -165,6 +172,27 @@ impl KnowledgeService for FusekiKnowledgeService<'_> {
                             .collect::<HashMap<String, rdf::node::Node>>()
                     })
                     .collect::<Vec<_>>(),
+            },
+            code => panic!("Unexpected status {}.", code),
+        }
+    }
+
+    async fn describe(&self, dataset: &Dataset, query: &str) -> Graph {
+        let form = [("query", query)];
+        let path = self.base.join(&dataset.name).unwrap();
+        let response = self
+            .client
+            .post(path)
+            .header(reqwest::header::ACCEPT, "application/ld+json")
+            .form(&form)
+            .send()
+            .await
+            .unwrap();
+        let status = response.status();
+        let response = response.text().await.unwrap();
+        match status {
+            reqwest::StatusCode::OK => Graph {
+                jsonld_representation: response,
             },
             code => panic!("Unexpected status {}.", code),
         }

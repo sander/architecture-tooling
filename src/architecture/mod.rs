@@ -1,4 +1,5 @@
 use super::knowledge;
+use crate::knowledge::Graph;
 use async_trait::async_trait;
 
 #[derive(Debug)]
@@ -39,6 +40,8 @@ pub struct Visualization {
 pub trait ArchitectureService {
     async fn components(&self) -> Vec<Component>;
     async fn relations(&self) -> Vec<Relation>;
+    async fn component_ids(&self) -> Vec<ComponentId>;
+    async fn describe(&self, component_id: &ComponentId) -> super::knowledge::Graph;
 }
 
 pub fn visualization(components: Vec<Component>, relations: Vec<Relation>) -> Visualization {
@@ -95,7 +98,7 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
 {
     async fn components(&self) -> Vec<Component> {
         let query: &str = std::include_str!("components.sparql");
-        let result = &self.knowledge.query(&self.dataset, query).await;
+        let result = &self.knowledge.select(&self.dataset, query).await;
 
         assert_eq!(result.vars, ["component", "label", "description", "kind"]);
 
@@ -140,9 +143,27 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
             .collect::<Vec<_>>()
     }
 
+    async fn component_ids(&self) -> Vec<ComponentId> {
+        let query: &str = std::include_str!("component_ids.sparql");
+        let result = &self.knowledge.select(&self.dataset, query).await;
+
+        assert_eq!(result.vars, ["component"]);
+
+        result
+            .bindings
+            .iter()
+            .map(|record| ComponentId {
+                value: match record.get("component") {
+                    Some(rdf::node::Node::UriNode { uri }) => uri.to_string().to_string(),
+                    c => panic!("Unexpected id {:?}", c),
+                },
+            })
+            .collect::<Vec<_>>()
+    }
+
     async fn relations(&self) -> Vec<Relation> {
         let query: &str = std::include_str!("relations.sparql");
-        let result = &self.knowledge.query(&self.dataset, query).await;
+        let result = &self.knowledge.select(&self.dataset, query).await;
 
         assert_eq!(result.vars, ["from", "label", "to"]);
 
@@ -170,5 +191,12 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
                 },
             })
             .collect::<Vec<_>>()
+    }
+
+    async fn describe(&self, component_id: &ComponentId) -> Graph {
+        let template: &str = std::include_str!("describe.sparql");
+        let query = template.replace("$ID", component_id.value.as_str());
+        let result = self.knowledge.describe(&self.dataset, query.as_str()).await;
+        result
     }
 }

@@ -55,5 +55,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("graph: {:?}", visualization);
 
+    let ids = architecture.component_ids().await;
+    println!("ids: {:?}", ids);
+
+    let descriptions = ids.iter().map(|id| architecture.describe(id));
+    let foo = futures::future::join_all(descriptions).await;
+    println!("descriptions: {:?}", foo);
+
     Ok(())
 }
