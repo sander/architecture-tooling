@@ -17,7 +17,8 @@ pub fn steps() -> Steps<crate::MyWorld> {
                 client: &client,
                 base: local,
             };
-            let dataset = block_on(knowledge.create_temporary_dataset());
+            let name = "test".to_string();
+            let dataset = block_on(knowledge.create_dataset(name));
             world.dataset = Some(dataset);
         })
         .then("I have a dataset", |world, _step| {

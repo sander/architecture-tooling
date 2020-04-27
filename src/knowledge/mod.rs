@@ -1,7 +1,6 @@
 use async_trait::async_trait;
 use serde::Deserialize;
 use std::collections::HashMap;
-use uuid::Uuid;
 
 /// Collection of default graph and one or more named graphs.
 #[derive(Debug)]
@@ -40,8 +39,8 @@ pub struct QueryResult {
 /// Provides knowledge management.
 #[async_trait]
 pub trait KnowledgeService {
-    /// Creates a temporary dataset for importing and querying.
-    async fn create_temporary_dataset(&self) -> Dataset;
+    /// Creates a dataset for importing and querying.
+    async fn create_dataset(&self, name: String) -> Dataset;
 
     /// Imports a file into a dataset.
     async fn import(&self, dataset: &Dataset, graph_name: String, file: DataFile);
@@ -99,8 +98,7 @@ pub struct QueryResponse {
 
 #[async_trait]
 impl KnowledgeService for FusekiKnowledgeService<'_> {
-    async fn create_temporary_dataset(&self) -> Dataset {
-        let name = Uuid::new_v4().to_hyphenated().to_string();
+    async fn create_dataset(&self, name: String) -> Dataset {
         match self
             .client
             .post(self.base.join("/$/datasets").unwrap())
@@ -110,8 +108,8 @@ impl KnowledgeService for FusekiKnowledgeService<'_> {
             .unwrap()
             .status()
         {
-            reqwest::StatusCode::CONFLICT => panic!("Dataset named {} already exists.", name),
-            _ => Dataset { name },
+            reqwest::StatusCode::CONFLICT | reqwest::StatusCode::OK => Dataset { name },
+            _ => panic!("Error creating dataset {}.", name),
         }
     }
 
@@ -120,7 +118,7 @@ impl KnowledgeService for FusekiKnowledgeService<'_> {
         let path = self.base.join(&format!("/{}/data", &dataset.name)).unwrap();
         let response = self
             .client
-            .post(path)
+            .put(path)
             .query(&[("graph", graph_name)])
             .multipart(form)
             .send()
@@ -129,7 +127,7 @@ impl KnowledgeService for FusekiKnowledgeService<'_> {
         let status = response.status();
         let body = response.text().await.unwrap();
         match status {
-            reqwest::StatusCode::CREATED => (),
+            reqwest::StatusCode::CREATED | reqwest::StatusCode::OK => (),
             code => panic!("Unexpected status {} with message {}.", code, body),
         };
     }

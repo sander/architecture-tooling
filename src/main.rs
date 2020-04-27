@@ -12,7 +12,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         client: &client,
         base: local,
     };
-    let dataset = knowledge.create_temporary_dataset().await;
+    let name = "architecture";
+    let dataset = knowledge.create_dataset(name.to_string()).await;
     println!("dataset: {:?}", dataset);
 
     let togaf_contents = fs::read("OntologyTOGAFContentMetamodelV1.xml").unwrap();
@@ -37,8 +38,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let relations = architecture.relations().await;
     println!("relations: {:?}", relations);
-
-    knowledge.delete(&dataset).await;
 
     let visualization = visualization(components, relations);
 
