@@ -1,17 +1,14 @@
-mod architecture;
-mod knowledge;
-
-use architecture::ArchitectureService;
-use knowledge::KnowledgeService;
 use std::fs;
 use std::io::Write;
 use std::process;
+use tooling::architecture::{visualization, ArchitectureService};
+use tooling::knowledge::{DataFile, KnowledgeService};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let local = url::Url::parse("http://localhost:3030/")?;
-    let knowledge = knowledge::FusekiKnowledgeService {
+    let knowledge = tooling::knowledge::FusekiKnowledgeService {
         client: &client,
         base: local,
     };
@@ -19,10 +16,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("dataset: {:?}", dataset);
 
     let togaf_contents = fs::read("OntologyTOGAFContentMetamodelV1.xml").unwrap();
-    let togaf_file = knowledge::DataFile::RdfXml(togaf_contents);
+    let togaf_file = DataFile::RdfXml(togaf_contents);
 
     let archi_contents = fs::read("architecture.ttl").unwrap();
-    let archi_file = knowledge::DataFile::Turtle(archi_contents);
+    let archi_file = DataFile::Turtle(archi_contents);
 
     knowledge
         .import(&dataset, "togaf".to_string(), togaf_file)
@@ -31,7 +28,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .import(&dataset, "architecture".to_string(), archi_file)
         .await;
 
-    let architecture = architecture::DataBackedArchitectureService {
+    let architecture = tooling::architecture::DataBackedArchitectureService {
         dataset: &dataset,
         knowledge: &knowledge,
     };
@@ -43,7 +40,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     knowledge.delete(&dataset).await;
 
-    let visualization = architecture::visualization(components, relations);
+    let visualization = visualization(components, relations);
 
     let child = process::Command::new("dot")
         .arg("-Tsvg")
