@@ -32,12 +32,12 @@ This project uses:
 - Rust for integrated development with clear domain modeling capabilities (e.g. algebraic data types, traits).
 - Apache Jena Fuseki for knowledge management implementation.
 - Graphviz for architecture diagram rendering.
+- Docker for easily setting up a local development environment.
 
 ## To run
 
-1. Download [Apache Jena Fuseki](https://jena.apache.org/download/).
-2. In its root folder, `chmod +x` and run `./fuseki-server`.
-3. In the current project’s root folder, run `./download-togaf.sh`.
-4. In the current project’s root folder, run `cargo run`.
+1. In the current project’s root folder, run `docker-compose run` and keep it running.
+2. In the current project’s root folder, run `./download-togaf.sh`.
+3. In the current project’s root folder, run `cargo run`.
 
-Note: at the time of writing only the workflow above is implemented, with steps missing.
+Note: at the time of~~~~ writing only the workflow above is implemented, with steps missing.
