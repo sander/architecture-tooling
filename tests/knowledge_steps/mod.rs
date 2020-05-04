@@ -12,11 +12,7 @@ pub fn steps() -> Steps<crate::MyWorld> {
         })
         .when("I create a temporary dataset", |world, _step| {
             let client = reqwest::Client::new();
-            let local = url::Url::parse("http://localhost:3030/").unwrap();
-            let knowledge = FusekiKnowledgeService {
-                client: &client,
-                base: local,
-            };
+            let knowledge = FusekiKnowledgeService::new(&client, "http://localhost:3030/");
             let name = "test".to_string();
             let dataset = block_on(knowledge.create_dataset(name));
             world.dataset = Some(dataset);
