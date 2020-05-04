@@ -7,11 +7,8 @@ use tooling::knowledge::{DataFile, KnowledgeService};
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
-    let local = url::Url::parse("http://localhost:3030/")?;
-    let knowledge = tooling::knowledge::FusekiKnowledgeService {
-        client: &client,
-        base: local,
-    };
+    let knowledge =
+        tooling::knowledge::FusekiKnowledgeService::new(&client, "http://localhost:3030/");
     let name = "architecture";
     let dataset = knowledge.create_dataset(name.to_string()).await;
     println!("dataset: {:?}", dataset);

@@ -76,12 +76,12 @@ pub trait KnowledgeService {
 }
 
 pub struct FusekiKnowledgeService<'a> {
-    pub client: &'a reqwest::Client,
-    pub base: url::Url,
+    client: &'a reqwest::Client,
+    base: url::Url,
 }
 
 impl FusekiKnowledgeService<'_> {
-    fn new<'a>(client: &'a reqwest::Client, base_url: &'a str) -> impl KnowledgeService + 'a {
+    pub fn new<'a>(client: &'a reqwest::Client, base_url: &'a str) -> impl KnowledgeService + 'a {
         let local = url::Url::parse(base_url).expect("parse error");
         FusekiKnowledgeService {
             client: &client,
