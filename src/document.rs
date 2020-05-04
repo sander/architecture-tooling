@@ -3,13 +3,20 @@ use std::collections::HashMap;
 
 /// A resource, as in RDF, identified by IRI.
 #[derive(Hash, PartialEq, Eq, Debug)]
-struct Resource(String);
+pub struct Resource(String);
 
-struct MarkdownDocument<'a>(&'a str);
+#[derive(Debug)]
+pub struct MarkdownDocument<'a>(pub &'a str);
 
-trait Document {
+pub trait Document {
     fn get_outbound_links(&self) -> Vec<Resource>;
     fn render_with_replaced_labels(&self, labels: HashMap<Resource, String>) -> String;
+}
+
+impl<'a> From<&'a String> for MarkdownDocument<'a> {
+    fn from(s: &'a String) -> Self {
+        MarkdownDocument(s)
+    }
 }
 
 impl Document for MarkdownDocument<'_> {
