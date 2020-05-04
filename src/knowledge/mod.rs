@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use serde::Deserialize;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 /// Collection of default graph and one or more named graphs.
 #[derive(Debug)]
@@ -13,6 +13,22 @@ pub struct Dataset {
 pub enum DataFile {
     Turtle(Vec<u8>),
     RdfXml(Vec<u8>),
+}
+
+/// A resource, as in RDF, identified by IRI.
+#[derive(Hash, PartialEq, Eq, Debug, Clone)]
+pub struct Resource(String);
+
+impl From<String> for Resource {
+    fn from(s: String) -> Self {
+        Resource(s)
+    }
+}
+
+impl From<&str> for Resource {
+    fn from(s: &str) -> Self {
+        Resource(s.to_string())
+    }
 }
 
 impl DataFile {
@@ -62,6 +78,16 @@ pub trait KnowledgeService {
 pub struct FusekiKnowledgeService<'a> {
     pub client: &'a reqwest::Client,
     pub base: url::Url,
+}
+
+impl FusekiKnowledgeService<'_> {
+    fn new<'a>(client: &'a reqwest::Client, base_url: &'a str) -> impl KnowledgeService + 'a {
+        let local = url::Url::parse(base_url).expect("parse error");
+        FusekiKnowledgeService {
+            client: &client,
+            base: local,
+        }
+    }
 }
 
 #[derive(Deserialize, Debug)]
@@ -196,5 +222,91 @@ impl KnowledgeService for FusekiKnowledgeService<'_> {
             },
             code => panic!("Unexpected status {}.", code),
         }
+    }
+
+    // async fn get_labels(
+    //     &self,
+    //     dataset: &Dataset,
+    //     resources: HashSet<Resource>,
+    // ) -> HashMap<Resource, String, RandomState> {
+    //     unimplemented!()
+    // }
+}
+
+async fn get_label(
+    service: &impl KnowledgeService,
+    dataset: &Dataset,
+    resource: &Resource,
+) -> Option<String> {
+    let query = "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?label
+WHERE {
+  GRAPH ?g { <$RESOURCE> rdfs:label ?label }
+}
+LIMIT 25"
+        .replace("$RESOURCE", &resource.0);
+    let results = service.select(dataset, &query).await;
+    let key = "label";
+
+    assert_eq!(results.vars, [key]);
+
+    results
+        .bindings
+        .get(0)
+        .and_then(|b| b.get(key))
+        .and_then(|n| match n {
+            rdf::node::Node::LiteralNode {
+                literal: label,
+                data_type: _,
+                language: _,
+            } => Some(label.to_string()),
+            _ => None,
+        })
+}
+
+pub async fn get_labels(
+    service: &impl KnowledgeService,
+    dataset: &Dataset,
+    resources: HashSet<Resource>,
+) -> HashMap<Resource, String> {
+    let mut result = HashMap::new();
+    for resource in resources {
+        match get_label(service, dataset, &resource).await {
+            Some(label) => {
+                result.insert(resource, label);
+            }
+            None => {}
+        }
+    }
+    result
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::knowledge::{get_labels, FusekiKnowledgeService, KnowledgeService, Resource};
+    use std::collections::HashSet;
+
+    #[tokio::test]
+    async fn can_get_labels() {
+        let client = reqwest::Client::new();
+        let knowledge = FusekiKnowledgeService::new(&client, "http://localhost:3030/");
+        let name = "architecture";
+        let dataset = knowledge.create_dataset(name.to_string()).await;
+
+        let mut resources = HashSet::new();
+        let key = Resource::from(
+            "http://localhost:3030/architecture/data?graph=architecture.ttl#architecture-application-service",
+        );
+        resources.insert(key.clone());
+
+        let labels = get_labels(&knowledge, &dataset, resources).await;
+
+        assert_eq!(labels.len(), 1);
+        assert_eq!(
+            labels.get(&key),
+            Some(&"architecture application service".to_string())
+        );
+        println!("labels: {:?}", labels);
     }
 }
