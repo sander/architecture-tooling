@@ -1,5 +1,5 @@
 use pulldown_cmark::{html, CowStr, Event, Parser, Tag};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 /// A resource, as in RDF, identified by IRI.
 #[derive(Hash, PartialEq, Eq, Debug)]
@@ -9,7 +9,7 @@ pub struct Resource(String);
 pub struct MarkdownDocument<'a>(pub &'a str);
 
 pub trait Document {
-    fn get_outbound_links(&self) -> Vec<Resource>;
+    fn get_outbound_links(&self) -> HashSet<Resource>;
     fn render_with_replaced_labels(&self, labels: HashMap<Resource, String>) -> String;
 }
 
@@ -20,11 +20,11 @@ impl<'a> From<&'a String> for MarkdownDocument<'a> {
 }
 
 impl Document for MarkdownDocument<'_> {
-    fn get_outbound_links(&self) -> Vec<Resource> {
-        let mut links = Vec::new();
+    fn get_outbound_links(&self) -> HashSet<Resource> {
+        let mut links = HashSet::new();
         let parser = Parser::new(self.0).flat_map(|event| match event {
             Event::End(Tag::Link(_, destination_url, _)) => {
-                links.push(Resource(destination_url.to_string()));
+                links.insert(Resource(destination_url.to_string()));
                 vec![]
             }
             _ => vec![],
@@ -64,14 +64,11 @@ mod tests {
     #[test]
     fn extracts_outbound_links() {
         let doc = MarkdownDocument("[Hello] [world](#foo).\n\n[Hello]: http://example.com/");
+        let links = doc.get_outbound_links();
 
-        assert_eq!(
-            doc.get_outbound_links(),
-            vec![
-                Resource("http://example.com/".to_string()),
-                Resource("#foo".to_string()),
-            ]
-        );
+        assert_eq!(links.len(), 2);
+        assert!(links.contains(&Resource("http://example.com/".to_string())));
+        assert!(links.contains(&Resource("#foo".to_string())));
     }
 
     #[test]
