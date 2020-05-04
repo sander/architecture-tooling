@@ -26,7 +26,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .import(&dataset, "togaf".to_string(), togaf_file)
         .await;
     knowledge
-        .import(&dataset, "architecture".to_string(), archi_file)
+        .import(&dataset, "architecture.ttl".to_string(), archi_file)
         .await;
 
     let architecture = tooling::architecture::DataBackedArchitectureService {
