@@ -223,14 +223,6 @@ impl KnowledgeService for FusekiKnowledgeService<'_> {
             code => panic!("Unexpected status {}.", code),
         }
     }
-
-    // async fn get_labels(
-    //     &self,
-    //     dataset: &Dataset,
-    //     resources: HashSet<Resource>,
-    // ) -> HashMap<Resource, String, RandomState> {
-    //     unimplemented!()
-    // }
 }
 
 async fn get_label(
