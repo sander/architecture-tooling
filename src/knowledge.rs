@@ -8,13 +8,6 @@ pub struct Dataset {
     name: String,
 }
 
-/// File containing a graph.
-#[derive(Debug)]
-pub enum DataFile {
-    Turtle(Vec<u8>),
-    RdfXml(Vec<u8>),
-}
-
 /// A resource, as in RDF, identified by IRI.
 #[derive(Hash, PartialEq, Eq, Debug, Clone)]
 pub struct Resource(String);
@@ -28,21 +21,6 @@ impl From<String> for Resource {
 impl From<&str> for Resource {
     fn from(s: &str) -> Self {
         Resource(s.to_string())
-    }
-}
-
-impl DataFile {
-    fn multipart(self) -> reqwest::multipart::Part {
-        match self {
-            DataFile::Turtle(contents) => reqwest::multipart::Part::bytes(contents)
-                .file_name("file.ttl")
-                .mime_str("text/turtle")
-                .unwrap(),
-            DataFile::RdfXml(contents) => reqwest::multipart::Part::bytes(contents)
-                .file_name("file.xml")
-                .mime_str("text/xml")
-                .unwrap(),
-        }
     }
 }
 
@@ -62,12 +40,6 @@ pub struct Graph {
 pub trait KnowledgeService {
     /// Creates a dataset for importing and querying.
     async fn create_dataset(&self, name: String) -> Dataset;
-
-    /// Imports a file into a dataset.
-    async fn import(&self, dataset: &Dataset, graph_name: String, file: DataFile);
-
-    /// Deletes a (temporary) dataset.
-    async fn delete(&self, dataset: &Dataset);
 
     /// Performs a SPARQL query.
     async fn select(&self, dataset: &Dataset, query: &str) -> QueryResult;
@@ -143,38 +115,6 @@ impl KnowledgeService for FusekiKnowledgeService<'_> {
         {
             reqwest::StatusCode::CONFLICT | reqwest::StatusCode::OK => Dataset { name },
             _ => panic!("Error creating dataset {}.", name),
-        }
-    }
-
-    async fn import(&self, dataset: &Dataset, graph_name: String, file: DataFile) {
-        let form = reqwest::multipart::Form::new().part("files[]", file.multipart());
-        let path = self.base.join(&format!("/{}/data", &dataset.name)).unwrap();
-        let response = self
-            .client
-            .put(path)
-            .query(&[("graph", graph_name)])
-            .multipart(form)
-            .send()
-            .await
-            .unwrap();
-        let status = response.status();
-        let body = response.text().await.unwrap();
-        match status {
-            reqwest::StatusCode::CREATED | reqwest::StatusCode::OK => (),
-            code => panic!("Unexpected status {} with message {}.", code, body),
-        };
-    }
-
-    async fn delete(&self, dataset: &Dataset) {
-        let path = self
-            .base
-            .join("/$/datasets/")
-            .unwrap()
-            .join(&dataset.name)
-            .unwrap();
-        match self.client.delete(path).send().await.unwrap().status() {
-            reqwest::StatusCode::OK => (),
-            code => panic!("Unexpected status {}.", code),
         }
     }
 

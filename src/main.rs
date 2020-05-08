@@ -1,34 +1,44 @@
-use graph_store::doc;
+use graph_store::{doc, DataFile, Graph, GraphStore, Resource};
 use std::fs;
 use std::io::Write;
 use std::process;
 use tooling::architecture::{visualization, ArchitectureService};
-use tooling::knowledge::{DataFile, KnowledgeService};
+use tooling::knowledge::KnowledgeService;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
-    let knowledge =
-        tooling::knowledge::FusekiKnowledgeService::new(&client, "http://localhost:3030/");
-    let name = "architecture";
-    let dataset = knowledge.create_dataset(name.to_string()).await;
-    println!("dataset: {:?}", dataset);
+    let dataset = graph_store::http::Dataset::get_or_create(
+        &client,
+        url::Url::parse("http://localhost:3030").unwrap(),
+        "architecture",
+    )
+    .await;
 
-    let togaf_contents = fs::read("OntologyTOGAFContentMetamodelV2.ttl").unwrap();
-    let togaf_file = DataFile::Turtle(togaf_contents);
+    let client_for_deprecated_service = reqwest::Client::new();
+    let knowledge = tooling::knowledge::FusekiKnowledgeService::new(
+        &client_for_deprecated_service,
+        "http://localhost:3030/",
+    );
+    let deprecated_dataset = knowledge.create_dataset("architecture".to_string()).await;
 
-    let archi_contents = fs::read("architecture.ttl").unwrap();
-    let archi_file = DataFile::Turtle(archi_contents);
-
-    knowledge
-        .import(&dataset, "togaf".to_string(), togaf_file)
+    dataset
+        .import(
+            Graph::Named(Resource::from("togaf")),
+            DataFile::unsafe_from_turtle(
+                &fs::read_to_string("OntologyTOGAFContentMetamodelV2.ttl").unwrap(),
+            ),
+        )
         .await;
-    knowledge
-        .import(&dataset, "architecture.ttl".to_string(), archi_file)
+    dataset
+        .import(
+            Graph::Named(Resource::from("architecture.ttl")),
+            DataFile::unsafe_from_turtle(&fs::read_to_string("architecture.ttl").unwrap()),
+        )
         .await;
 
     let architecture = tooling::architecture::DataBackedArchitectureService {
-        dataset: &dataset,
+        dataset: &deprecated_dataset,
         knowledge: &knowledge,
     };
     let components = architecture.components().await;
@@ -60,9 +70,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let foo = futures::future::join_all(descriptions).await;
     println!("descriptions: {:?}", foo);
 
-    let client = reqwest::Client::new();
-    let base = url::Url::parse("http://localhost:3030").unwrap();
-    let dataset = graph_store::http::Dataset::get_or_create(&client, base, &name).await;
     doc::export_to_html(&dataset).await;
 
     Ok(())
