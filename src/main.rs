@@ -1,3 +1,4 @@
+use graph_store::doc;
 use std::fs;
 use std::io::Write;
 use std::process;
@@ -58,6 +59,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let descriptions = ids.iter().map(|id| architecture.describe(id));
     let foo = futures::future::join_all(descriptions).await;
     println!("descriptions: {:?}", foo);
+
+    let client = reqwest::Client::new();
+    let base = url::Url::parse("http://localhost:3030").unwrap();
+    let dataset = graph_store::http::Dataset::get_or_create(&client, base, &name).await;
+    doc::export_to_html(&dataset).await;
 
     Ok(())
 }

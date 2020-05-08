@@ -5,3 +5,5 @@ target/
 .DS_Store
 
 OntologyTOGAFContentMetamodelV1.xml
+
+/*.html

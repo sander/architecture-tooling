@@ -559,7 +559,7 @@ dependencies = [
 
 [[package]]
 name = "graph-store"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "async-trait 0.1.24 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1766,7 +1766,7 @@ dependencies = [
  "async-trait 0.1.24 (registry+https://github.com/rust-lang/crates.io-index)",
  "cucumber_rust 0.6.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "futures 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "graph-store 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "graph-store 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "pulldown-cmark 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rdf 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "reqwest 0.10.3 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -2156,7 +2156,7 @@ dependencies = [
 "checksum gherkin_rust 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "0e246e72427f2a2dadc4a94a7db108b52269538d5c0ea0fe5570a707a78115a5"
 "checksum globset 0.4.5 (registry+https://github.com/rust-lang/crates.io-index)" = "7ad1da430bd7281dde2576f44c84cc3f0f7b475e7202cd503042dff01a8c8120"
 "checksum globwalk 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)" = "d9db17aec586697a93219b19726b5b68307eba92898c34b170857343fe67c99d"
-"checksum graph-store 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "981556e13e18fdd9c227c756c5f3ae7387c9da7c2eb26039bd8ecc1cfd1d2dd8"
+"checksum graph-store 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "394ebfccb91a47808f070e93a75744691a37cafa4d575f57fe5aa9cde11173dd"
 "checksum h2 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "b9433d71e471c1736fd5a61b671fc0b148d7a2992f666c958d03cd8feb3b88d1"
 "checksum heck 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)" = "20564e78d53d2bb135c343b3f47714a56af2061f1c928fdb541dc7b9fdd94205"
 "checksum hermit-abi 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)" = "1010591b26bbfe835e9faeabeb11866061cc7dcebffd56ad7d0942d0e61aefd8"
