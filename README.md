@@ -40,4 +40,4 @@ This project uses:
 2. In the current project’s root folder, run `./download-togaf.sh`.
 3. In the current project’s root folder, run `cargo run`.
 
-Note: at the time of~~~~ writing only the workflow above is implemented, with steps missing.
+Note: at the time of writing only the workflow above is implemented, with steps missing.
