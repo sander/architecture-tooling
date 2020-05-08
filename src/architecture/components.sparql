@@ -1,4 +1,4 @@
-PREFIX togaf: <http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#> 
+PREFIX togaf: <http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 

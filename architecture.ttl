@@ -1,5 +1,5 @@
 @base <urn:uuid:907d6137-14d5-4ef8-93bf-e967bc558fee> .
-@prefix togaf: <http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#> .
+@prefix togaf: <http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 <#knowledge-management>
@@ -10,36 +10,83 @@
 <#knowledge-service>
   a togaf:BusinessService ;
   rdfs:label "knowledge service" ;
-  togaf:providesGovernedInterfacetoAccess <#knowledge-management> .
+  togaf:businessServiceProvidesGovernedInterfaceToAccessFunction <#knowledge-management> .
 
 <#knowledge-application-service>
   a togaf:InformationSystemService ;
   rdfs:label "knowledge application service" ;
-  togaf:ISRealizesBS <#knowledge-service> .
+  togaf:informationSystemServiceRealizesBusinessService <#knowledge-service> .
 
 <#knowledge-application-service-component>
   a togaf:LogicalApplicationComponent ;
   rdfs:label "knowledge application service component" ;
-  togaf:realizesGoal <#knowledge-application-service> .
+  togaf:logicalApplicationComponentImplementsInformationSystemService <#knowledge-application-service> .
 
 <#architecture-management>
   a togaf:Function ;
   rdfs:label "architecture management" ;
   rdfs:comment "Structure of components, relationships, principles, and guidelines for design." ;
-  togaf:supportsOrIsRealizedByProcess <#architecture-modelling> .
+  togaf:functionIsRealizedByAndOrSupportsProcess <#architecture-modelling> .
 
 <#architecture-service>
   a togaf:BusinessService ;
   rdfs:label "architecture service" ;
-  togaf:providesGovernedInterfacetoAccess <#architecture-management> .
+  togaf:businessServiceProvidesGovernedInterfaceToAccessFunction <#architecture-management> .
 
 <#architecture-application-service>
   a togaf:InformationSystemService ;
   rdfs:label "architecture application service" ;
-  togaf:ISRealizesBS <#architecture-service> ;
-  togaf:isRealizedThrough <#knowledge-application-service-component> .
+  togaf:informationSystemServiceRealizesBusinessService <#architecture-service> ;
+  togaf:informationSystemServiceIsRealizedThroughLogicalApplicationComponent <#knowledge-application-service-component> .
 
 <#architecture-modelling>
   a togaf:Process ;
   rdfs:label "architecture modelling" ;
-  togaf:orchestratesAndOrDecomposes <#knowledge-management> .
+  togaf:processDecomposesAndOrOrchestratesFunction <#knowledge-management> .
+
+# Makes the graph easier to read
+<http://www.w3.org/2000/01/rdf-schema#comment> rdfs:label "comment" .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> rdfs:label "subclass of" .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> rdfs:label "sub-class of" .
+<http://www.w3.org/2000/01/rdf-schema#label> rdfs:label "label" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> rdfs:label "type" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#first> rdfs:label "first" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> rdfs:label "nil" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> rdfs:label "rest" .
+<http://www.w3.org/2002/07/owl#Class> rdfs:label "class" .
+<http://www.w3.org/2002/07/owl#Thing> rdfs:label "thing" .
+<http://www.w3.org/2002/07/owl#someValuesFrom> rdfs:label "some values from" .
+<http://www.w3.org/2002/07/owl#intersectionOf> rdfs:label "intersection of" .
+<http://www.w3.org/2002/07/owl#equivalentClass> rdfs:label "equivalent class" .
+<http://www.w3.org/2002/07/owl#disjointWith> rdfs:label "disjoint with" .
+<http://www.w3.org/2002/07/owl#AllDisjointClasses> rdfs:label "all disjoint classes" .
+<http://www.w3.org/2002/07/owl#Ontology> rdfs:label "ontology" .
+<http://www.w3.org/2002/07/owl#Restriction> rdfs:label "restriction" .
+<http://www.w3.org/2002/07/owl#priorVersion> rdfs:label "prior version" .
+<http://www.w3.org/2002/07/owl#SymmetricProperty> rdfs:label "symmetric property" .
+<http://www.w3.org/2002/07/owl#inverseOf> rdfs:label "inverse of" .
+<http://www.w3.org/2002/07/owl#versionInfo> rdfs:label "version info" .
+<http://www.w3.org/2002/07/owl#onProperty> rdfs:label "on property" .
+<http://www.w3.org/2002/07/owl#members> rdfs:label "members" .
+<http://www.w3.org/2002/07/owl#ObjectProperty> rdfs:label "object property" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#ServicesExtension> rdfs:label "Services Extension" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#TechnologyArchitecture> rdfs:label "Technology Architecture" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#Architecture> rdfs:label "Architecture" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#ArchitectureComponent> rdfs:label "Architecture Component" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#AssociationObjects> rdfs:label "Association Objects" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#CoreContent> rdfs:label "Core Content" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#ContentClassification> rdfs:label "Content Classification" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#InfrastructureConsolidationExtension> rdfs:label "Infrastructure Consolidation Extension" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#MotivationExtension> rdfs:label "Motivation Extension" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#GovernanceExtension> rdfs:label "Governance Extension" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#ProcessModelingExtension> rdfs:label "Process Modeling Extension" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#DataModelingExtension> rdfs:label "Data Modeling Extension" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#DataArchitectureComponent> rdfs:label "Data Architecture Component" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#DataArchitecture> rdfs:label "Data Architecture" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#TechnologyArchitectureComponent> rdfs:label "Technology Architecture Component" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#ApplicationArchitectureComponent> rdfs:label "Application Architecture Component" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#BusinessArchitectureComponent> rdfs:label "Business Architecture Component" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#BusinessArchitecture> rdfs:label "Business Architecture" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#ApplicationArchitecture> rdfs:label "Application Architecture" .
+<http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl> rdfs:label "Ontology for TOGAF Content Metamodel v1" .
+<http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl> rdfs:label "Ontology for TOGAF Content Metamodel v2" .

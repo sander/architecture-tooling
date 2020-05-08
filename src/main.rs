@@ -14,8 +14,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let dataset = knowledge.create_dataset(name.to_string()).await;
     println!("dataset: {:?}", dataset);
 
-    let togaf_contents = fs::read("OntologyTOGAFContentMetamodelV1.xml").unwrap();
-    let togaf_file = DataFile::RdfXml(togaf_contents);
+    let togaf_contents = fs::read("OntologyTOGAFContentMetamodelV2.ttl").unwrap();
+    let togaf_file = DataFile::Turtle(togaf_contents);
 
     let archi_contents = fs::read("architecture.ttl").unwrap();
     let archi_file = DataFile::Turtle(archi_contents);

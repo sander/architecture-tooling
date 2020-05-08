@@ -130,10 +130,10 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
                     },
                     kind: match record.get("kind") {
                         Some(rdf::node::Node::UriNode { uri }) => match uri.to_string().as_str() {
-                            "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#BusinessService" => ComponentKind::BusinessService,
-                            "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#InformationSystemService" => ComponentKind::InformationSystemService,
-                            "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#Function" => ComponentKind::Function,
-                            "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#Process" => ComponentKind::Process,
+                            "http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#BusinessService" => ComponentKind::BusinessService,
+                            "http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#InformationSystemService" => ComponentKind::InformationSystemService,
+                            "http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#Function" => ComponentKind::Function,
+                            "http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#Process" => ComponentKind::Process,
                             kind => panic!("Unknown kind {}.", kind)
                         },
                         _ => panic!("Unexpected kind"),
@@ -177,10 +177,10 @@ impl<'a, K: knowledge::KnowledgeService + 'a + std::marker::Sync> ArchitectureSe
                 },
                 label: match record.get("label") {
                     Some(rdf::node::Node::UriNode { uri }) => match uri.to_string().as_str() {
-                        "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#ISRealizesBS" => "realizes".to_string(),
-                        "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#providesGovernedInterfacetoAccess" => "provides governed interface to access".to_string(),
-                        "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#orchestratesAndOrDecomposes" => "orchestrates and/or decomposes".to_string(),
-                        "http://www.semanticweb.org/ontologies/2010/0/OntologyTOGAFContentMetamodel.owl#supportsOrIsRealizedByProcess" => "supports or is realized by".to_string(),
+                        "http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#informationSystemServiceRealizesBusinessService" => "realizes".to_string(),
+                        "http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#businessServiceProvidesGovernedInterfaceToAccessFunction" => "provides governed interface to access".to_string(),
+                        "http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#processDecomposesAndOrOrchestratesFunction" => "orchestrates and/or decomposes".to_string(),
+                        "http://www.semanticweb.org/ontologies/2020/4/OntologyTOGAFContentMetamodel.owl#functionIsRealizedByAndOrSupportsProcess" => "supports or is realized by".to_string(),
                         url => panic!("Unknown url {}.", url)
                     },
                     _ => panic!("Unexpected label"),
